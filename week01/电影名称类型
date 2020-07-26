@@ -1,0 +1,43 @@
+import requests
+import lxml.etree
+
+# 爬取页面详细信息
+
+# 电影详细页面
+url = 'https://maoyan.com/films/1376'
+
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
+
+# 声明为字典使用字典的语法赋值
+header = {}
+header['user-agent'] = user_agent
+response = requests.get(url, headers=header)
+# print(response.text)
+# xml化处理
+text = response.text
+print(text)
+selector = lxml.etree.HTML(text)
+
+# 电影名称
+film_name = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/h1/text()')
+print(f'电影名称: {film_name}')
+# 电影名称
+# film_name = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/h1/text()')
+# print(f'电影名称: {film_name}')
+# 上映日期
+plan_date = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[3]/text()')
+print(f'上映日期: {plan_date}')
+
+# 评分
+rating = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[1]/a/text()')
+print(f'类型：{rating}')
+
+mylist = [film_name, plan_date, rating]
+
+
+import pandas as pd
+
+movie1 = pd.DataFrame(data = mylist)
+
+# windows需要使用gbk字符集
+movie1.to_csv('./movie1.csv', encoding='utf8', index=False, header=False)
